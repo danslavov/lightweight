@@ -1,0 +1,9 @@
+Using 1 GPUs
+Namespace(aux=False, aux_weight=0.4, base_size=700, batch_size=4, crop_size=700, dataset='elements', device='cuda', distributed=False, epochs=999, local_rank=0, log_dir='../runs/logs/', log_iter=1, lr=0.01, max_nonimprovement=2, model='mobilenetv3_small', momentum=0.9, no_cuda=False, num_gpus=1, ohem=False, resume='C:/Users/Admin/PycharmProjects/lightweight/runs/saved_state/pretrained/mobilenetv3_small_pretrained.pth', save_dir='c:/users/admin/pycharmprojects/lightweight/runs/saved_state/best', save_epoch=10, skip_val=False, start_epoch=0, val_epoch=5, warmup_factor=0.3333333333333333, warmup_iters=0, warmup_method='linear', weight_decay=0.0001, workers=3)
+
+
+Epoch: 001 | Time: 348.2187 | Avg. loss: 0.1315 | pixAcc: 0.9312 | Mean IoU: 0.5480 | combined: 1.4792
+Epoch: 002 | Time: 339.3082 | Avg. loss: 0.1566 | pixAcc: 0.9389 | Mean IoU: 0.5966 | combined: 1.5355
+Epoch: 003 | Time: 342.0551 | Avg. loss: 0.1383 | pixAcc: 0.9428 | Mean IoU: 0.6207 | combined: 1.5635
+Epoch: 004 | Time: 336.8612 | Avg. loss: 0.1274 | pixAcc: 0.9453 | Mean IoU: 0.6358 | combined: 1.5812
+Epoch: 005 | Time: 337.2282 | Avg. loss: 0.0879 | pixAcc: 0.9471 | Mean IoU: 0.6467 | combined: 1.5938
