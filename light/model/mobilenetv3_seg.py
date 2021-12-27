@@ -101,10 +101,10 @@ def get_mobilenet_v3_small_seg(dataset='citys', pretrained=False, root='~/.torch
         'citys': 'citys',
     }
     from light.data import datasets
-    # model = MobileNetV3Seg(datasets[dataset].NUM_CLASS, backbone='mobilenetv3_small',
-    #                        pretrained_base=pretrained_base, **kwargs)
-    model = MobileNetV3Seg(19, backbone='mobilenetv3_small',
-                           pretrained_base=pretrained_base, **kwargs)  # INFO: only for initial loading of pretrained model on cityscapes. Change to 4 after first saving of the best model.
+    # model = MobileNetV3Seg(19, backbone='mobilenetv3_small',
+    #                        pretrained_base=pretrained_base, **kwargs)  # INFO: only for initial loading of pretrained model on cityscapes with 19 classes.
+    model = MobileNetV3Seg(datasets[dataset].NUM_CLASS, backbone='mobilenetv3_small',
+                           pretrained_base=pretrained_base, **kwargs)
     if pretrained:
         from ..model import get_model_file
         model.load_state_dict(

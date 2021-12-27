@@ -39,7 +39,7 @@ def parse_args():
                         help='base image size')
     parser.add_argument('--crop-size', type=int, default=700,
                         help='crop image size')
-    parser.add_argument('--workers', '-j', type=int, default=3,
+    parser.add_argument('--workers', '-j', type=int, default=1,
                         metavar='N', help='dataloader threads')
     # training hyper params
     parser.add_argument('--ohem', action='store_true', default=False,
@@ -48,7 +48,7 @@ def parse_args():
                         help='Auxiliary loss')
     parser.add_argument('--aux-weight', type=float, default=0.4,
                         help='auxiliary loss weight')
-    parser.add_argument('--batch-size', type=int, default=4, metavar='N',          # ---------BATCH------------
+    parser.add_argument('--batch-size', type=int, default=32, metavar='N',          # ---------BATCH------------
                         help='input batch size for training (default: 4)')
     parser.add_argument('--start_epoch', type=int, default=0,
                         metavar='N', help='start epochs (default:0)')
@@ -73,7 +73,7 @@ def parse_args():
                         help='disables CUDA training')
     parser.add_argument('--local_rank', type=int, default=0)
     # checkpoint and log
-    parser.add_argument('--resume', type=str, default='C:/Users/Admin/PycharmProjects/lightweight/runs/saved_state/pretrained/mobilenetv3_small_pretrained.pth',
+    parser.add_argument('--resume', type=str, default='C:/Users/Admin/PycharmProjects/lightweight/runs/saved_state/best/best_model.pth',
                         help='put the path to resuming file if needed')
     parser.add_argument('--save-dir', default='c:/users/admin/pycharmprojects/lightweight/runs/saved_state/best',
                         help='Directory for saving checkpoint models')
@@ -142,10 +142,10 @@ class Trainer(object):
                 self.model.load_state_dict(torch.load(args.resume, map_location=lambda storage, loc: storage))
                 print('\nLOADED {}\n'.format(args.resume))
 
-        # INFO: mine. Reinitialize the final layer with 4 output channels
-        if self.args.dataset == 'elements':
-            self.model.head.project = nn.Conv2d(128, 4, 1)
-            self.model.to(self.device)
+        # INFO: mine. Reinitialize the final layer with 4 output channels (only when loading pretrained state)
+        # if self.args.dataset == 'elements':
+        #     self.model.head.project = nn.Conv2d(128, 4, 1)
+        #     self.model.to(self.device)
 
         # INFO: mine.
         # The whole model consists of 2 large parts, named "pretrained" (MobileNetV3/encoder) and "head" (Segmentation Head/decoder)
@@ -215,12 +215,9 @@ class Trainer(object):
             # img_path = self.train_loader.dataset.images[iteration]
             # mask_path = self.train_loader.dataset.mask_paths[iteration]
 
-
             iteration += 1  # TODO: why iteration is not incremented automatically?
 
-            # start_iter_time = time.time()
-
-            self.lr_scheduler.step()
+            start_iter_time = time.time()
 
             images = images.to(self.device)
             targets = targets.to(self.device)
@@ -244,23 +241,10 @@ class Trainer(object):
 
             self.metric.update(outputs[0], targets)
 
-            # if iteration % log_per_iters == 0 and save_to_disk:
-            #     logger.info(
-            #         "Iters: {:d}/{:d} || Lr: {:.6f} || Loss: {:.4f} || Cost Time: {} || Estimated Time: {}".format(
-            #             iteration, max_iters, self.optimizer.param_groups[0]['lr'], losses_reduced.item(),
-            #             str(datetime.timedelta(seconds=int(time.time() - start_time))), eta_string))
-
-            # if iteration % save_per_iters == 0 and save_to_disk:
-            #     save_checkpoint(self.model, self.args, is_best=False)
-
-            # if not self.args.skip_val and iteration % val_per_iters == 0:
-            #     self.validation()
-            #     self.model.train()
-
-            # iter_duration = time.time() - start_iter_time
-            # iter_pixAcc, iter_mIoU = self.metric.get()
-            # logger.info('iteration {} || iter_time: {} | iter_pixAcc: {} | iter_mIoU: {} | iter_combined: {}'
-            #             .format(iteration, iter_duration, iter_pixAcc, iter_mIoU, iter_pixAcc + iter_mIoU))
+            iter_duration = time.time() - start_iter_time
+            iter_pixAcc, iter_mIoU = self.metric.get()
+            logger.info('iteration {} || iter_time: {} | iter_pixAcc: {} | iter_mIoU: {} | iter_combined: {}'
+                        .format(iteration, iter_duration, iter_pixAcc, iter_mIoU, iter_pixAcc + iter_mIoU))
 
             # at the end of the current epoch:
             if iteration % iter_per_epoch == 0:
@@ -274,12 +258,14 @@ class Trainer(object):
 
                 # validate each n epochs (n = epochs_per_val):
                 if epoch % epochs_per_val == 0:
-                    self.validation()
+                    self.validation(epoch)
                     self.model.train()
                     freeze_encoder(self.model)
                 epoch += 1  # increment epoch counter
                 start = time.time()  # reset time
                 torch.cuda.empty_cache()
+
+            self.lr_scheduler.step()
 
         # save_checkpoint(self.model, self.args, is_best=False)
         # total_training_time = time.time() - start_time
@@ -288,7 +274,7 @@ class Trainer(object):
         #     "Total training time: {} ({:.4f}s / it)".format(
         #         total_training_str, total_training_time / max_iters))
 
-    def validation(self):
+    def validation(self, epoch):
         # total_inter, total_union, total_correct, total_label = 0, 0, 0, 0
         # is_best = False
         torch.cuda.empty_cache()
@@ -327,7 +313,7 @@ class Trainer(object):
         if new_pred > self.best_pred:
             is_best = True
             self.best_pred = new_pred
-            save_checkpoint(self.model, self.args, is_best)
+            save_checkpoint(self.model, self.args, epoch, is_best)
             logger.info('MODEL SAVED')
         else:
             self.no_improvement += 1
@@ -338,21 +324,22 @@ class Trainer(object):
             exit()
 
 
-def save_checkpoint(model, args, is_best=False):
+def save_checkpoint(model, args, epoch, is_best=True):
     """Save Checkpoint"""
     directory = os.path.expanduser(args.save_dir)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    filename = '{}_{}.pth'.format(args.model, args.dataset)
+    # filename = '{}_{}_epoch_{}.pth'.format(args.model, args.dataset, epoch)
+    filename = 'saved_state_{}.pth'.format(epoch)
     filename = os.path.join(directory, filename)
 
     if args.distributed:
         model = model.module
     torch.save(model.state_dict(), filename)
-    # if is_best:
-    #     best_filename = '{}_{}_best.pth'.format(args.model, args.dataset)
-    #     best_filename = os.path.join(directory, best_filename)
-    #     shutil.copyfile(filename, best_filename)
+    if is_best:
+        best_filename = 'best_model.pth'
+        best_filename = os.path.join(directory, best_filename)
+        shutil.copyfile(filename, best_filename)
 
 
 if __name__ == '__main__':

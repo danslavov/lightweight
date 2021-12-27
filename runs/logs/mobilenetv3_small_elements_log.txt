@@ -1,9 +1,79 @@
 Using 1 GPUs
-Namespace(aux=False, aux_weight=0.4, base_size=700, batch_size=4, crop_size=700, dataset='elements', device='cuda', distributed=False, epochs=999, local_rank=0, log_dir='../runs/logs/', log_iter=1, lr=0.01, max_nonimprovement=2, model='mobilenetv3_small', momentum=0.9, no_cuda=False, num_gpus=1, ohem=False, resume='C:/Users/Admin/PycharmProjects/lightweight/runs/saved_state/pretrained/mobilenetv3_small_pretrained.pth', save_dir='c:/users/admin/pycharmprojects/lightweight/runs/saved_state/best', save_epoch=10, skip_val=False, start_epoch=0, val_epoch=5, warmup_factor=0.3333333333333333, warmup_iters=0, warmup_method='linear', weight_decay=0.0001, workers=3)
+Namespace(aux=False, aux_weight=0.4, base_size=700, batch_size=32, crop_size=700, dataset='elements', device='cuda', distributed=False, epochs=999, local_rank=0, log_dir='../runs/logs/', log_iter=1, lr=0.01, max_nonimprovement=2, model='mobilenetv3_small', momentum=0.9, no_cuda=False, num_gpus=1, ohem=False, resume='C:/Users/Admin/PycharmProjects/lightweight/runs/saved_state/best/best_model.pth', save_dir='c:/users/admin/pycharmprojects/lightweight/runs/saved_state/best', save_epoch=10, skip_val=False, start_epoch=0, val_epoch=5, warmup_factor=0.3333333333333333, warmup_iters=0, warmup_method='linear', weight_decay=0.0001, workers=1)
 
 
-Epoch: 001 | Time: 348.2187 | Avg. loss: 0.1315 | pixAcc: 0.9312 | Mean IoU: 0.5480 | combined: 1.4792
-Epoch: 002 | Time: 339.3082 | Avg. loss: 0.1566 | pixAcc: 0.9389 | Mean IoU: 0.5966 | combined: 1.5355
-Epoch: 003 | Time: 342.0551 | Avg. loss: 0.1383 | pixAcc: 0.9428 | Mean IoU: 0.6207 | combined: 1.5635
-Epoch: 004 | Time: 336.8612 | Avg. loss: 0.1274 | pixAcc: 0.9453 | Mean IoU: 0.6358 | combined: 1.5812
-Epoch: 005 | Time: 337.2282 | Avg. loss: 0.0879 | pixAcc: 0.9471 | Mean IoU: 0.6467 | combined: 1.5938
+iteration 1 || iter_time: 5.25393009185791 | iter_pixAcc: 0.8535665816326531 | iter_mIoU: 0.04910402372479439 | iter_combined: 0.9026706053574475
+iteration 2 || iter_time: 0.887969970703125 | iter_pixAcc: 0.8703657844387755 | iter_mIoU: 0.05290834233164787 | iter_combined: 0.9232741267704234
+iteration 3 || iter_time: 0.8829760551452637 | iter_pixAcc: 0.8668889243197279 | iter_mIoU: 0.07196927815675735 | iter_combined: 0.9388582024764852
+iteration 4 || iter_time: 0.890972375869751 | iter_pixAcc: 0.8678623724489796 | iter_mIoU: 0.11194317787885666 | iter_combined: 0.9798055503278362
+iteration 5 || iter_time: 0.9049665927886963 | iter_pixAcc: 0.8734514923469388 | iter_mIoU: 0.1440751552581787 | iter_combined: 1.0175266476051175
+iteration 6 || iter_time: 0.9019699096679688 | iter_pixAcc: 0.880125637755102 | iter_mIoU: 0.1646524965763092 | iter_combined: 1.0447781343314113
+iteration 7 || iter_time: 0.8999714851379395 | iter_pixAcc: 0.8819230047376093 | iter_mIoU: 0.17688508331775665 | iter_combined: 1.058808088055366
+iteration 8 || iter_time: 0.897972583770752 | iter_pixAcc: 0.8816749202806122 | iter_mIoU: 0.18414348363876343 | iter_combined: 1.0658184039193757
+iteration 9 || iter_time: 0.9029698371887207 | iter_pixAcc: 0.8815213293650793 | iter_mIoU: 0.19014190137386322 | iter_combined: 1.0716632307389427
+iteration 10 || iter_time: 0.8969719409942627 | iter_pixAcc: 0.8834409056122449 | iter_mIoU: 0.19577021896839142 | iter_combined: 1.0792111245806364
+iteration 11 || iter_time: 0.9069714546203613 | iter_pixAcc: 0.8840523886827458 | iter_mIoU: 0.19974124431610107 | iter_combined: 1.083793632998847
+iteration 12 || iter_time: 0.8939595222473145 | iter_pixAcc: 0.8845382971938776 | iter_mIoU: 0.20273222029209137 | iter_combined: 1.087270517485969
+iteration 13 || iter_time: 0.8929715156555176 | iter_pixAcc: 0.8827809360282575 | iter_mIoU: 0.2040608674287796 | iter_combined: 1.086841803457037
+iteration 14 || iter_time: 0.9069712162017822 | iter_pixAcc: 0.883200186771137 | iter_mIoU: 0.2061731070280075 | iter_combined: 1.0893732937991445
+iteration 15 || iter_time: 0.8919727802276611 | iter_pixAcc: 0.8803820620748299 | iter_mIoU: 0.206170454621315 | iter_combined: 1.086552516696145
+iteration 16 || iter_time: 0.9179708957672119 | iter_pixAcc: 0.8811709502551021 | iter_mIoU: 0.20806236565113068 | iter_combined: 1.0892333159062328
+iteration 17 || iter_time: 0.9319698810577393 | iter_pixAcc: 0.8807715711284514 | iter_mIoU: 0.20909535884857178 | iter_combined: 1.0898669299770232
+iteration 18 || iter_time: 0.9079720973968506 | iter_pixAcc: 0.8815241496598639 | iter_mIoU: 0.21046119928359985 | iter_combined: 1.0919853489434637
+iteration 19 || iter_time: 0.9089553356170654 | iter_pixAcc: 0.8813502853114931 | iter_mIoU: 0.2111702710390091 | iter_combined: 1.092520556350502
+iteration 20 || iter_time: 0.9229652881622314 | iter_pixAcc: 0.8807457844387755 | iter_mIoU: 0.21163567900657654 | iter_combined: 1.092381463445352
+iteration 21 || iter_time: 0.912966251373291 | iter_pixAcc: 0.8816963010204082 | iter_mIoU: 0.21272006630897522 | iter_combined: 1.0944163673293834
+iteration 22 || iter_time: 0.8989717960357666 | iter_pixAcc: 0.881387952226345 | iter_mIoU: 0.21314284205436707 | iter_combined: 1.094530794280712
+iteration 23 || iter_time: 0.8959698677062988 | iter_pixAcc: 0.8815306011535049 | iter_mIoU: 0.21372783184051514 | iter_combined: 1.09525843299402
+iteration 24 || iter_time: 0.9059658050537109 | iter_pixAcc: 0.881872300170068 | iter_mIoU: 0.21432442963123322 | iter_combined: 1.0961967298013011
+iteration 25 || iter_time: 0.9129717350006104 | iter_pixAcc: 0.8809029030612245 | iter_mIoU: 0.21432837843894958 | iter_combined: 1.0952312815001741
+iteration 26 || iter_time: 0.9349591732025146 | iter_pixAcc: 0.8790878335949764 | iter_mIoU: 0.21397466957569122 | iter_combined: 1.0930625031706676
+iteration 27 || iter_time: 0.92397141456604 | iter_pixAcc: 0.8789100222033258 | iter_mIoU: 0.21430465579032898 | iter_combined: 1.0932146779936547
+iteration 28 || iter_time: 0.9279680252075195 | iter_pixAcc: 0.8778516239978134 | iter_mIoU: 0.21420152485370636 | iter_combined: 1.0920531488515197
+iteration 29 || iter_time: 0.9179730415344238 | iter_pixAcc: 0.878075864268121 | iter_mIoU: 0.21460632979869843 | iter_combined: 1.0926821940668194
+iteration 30 || iter_time: 0.9079751968383789 | iter_pixAcc: 0.8775513435374149 | iter_mIoU: 0.21469777822494507 | iter_combined: 1.09224912176236
+iteration 31 || iter_time: 0.912970781326294 | iter_pixAcc: 0.8778597082784727 | iter_mIoU: 0.21508696675300598 | iter_combined: 1.0929466750314787
+iteration 32 || iter_time: 0.9089577198028564 | iter_pixAcc: 0.877433131377551 | iter_mIoU: 0.2151772826910019 | iter_combined: 1.0926104140685529
+iteration 33 || iter_time: 0.8999707698822021 | iter_pixAcc: 0.876956966991342 | iter_mIoU: 0.2152596265077591 | iter_combined: 1.092216593499101
+iteration 34 || iter_time: 0.8969719409942627 | iter_pixAcc: 0.8776810211584634 | iter_mIoU: 0.2158997803926468 | iter_combined: 1.0935808015511101
+iteration 35 || iter_time: 0.9279704093933105 | iter_pixAcc: 0.8771263739067056 | iter_mIoU: 0.21609820425510406 | iter_combined: 1.0932245781618097
+iteration 36 || iter_time: 0.9529685974121094 | iter_pixAcc: 0.8778692920918367 | iter_mIoU: 0.21708053350448608 | iter_combined: 1.0949498255963228
+iteration 37 || iter_time: 0.9249696731567383 | iter_pixAcc: 0.8780371449255377 | iter_mIoU: 0.21826010942459106 | iter_combined: 1.0962972543501288
+iteration 38 || iter_time: 0.8959634304046631 | iter_pixAcc: 0.877721723952739 | iter_mIoU: 0.21918590366840363 | iter_combined: 1.0969076276211425
+iteration 39 || iter_time: 0.8989739418029785 | iter_pixAcc: 0.8775829392333857 | iter_mIoU: 0.22046348452568054 | iter_combined: 1.0980464237590661
+iteration 40 || iter_time: 0.9069709777832031 | iter_pixAcc: 0.8780125526147959 | iter_mIoU: 0.2223140001296997 | iter_combined: 1.1003265527444956
+iteration 41 || iter_time: 0.8929708003997803 | iter_pixAcc: 0.8780728129666501 | iter_mIoU: 0.22417418658733368 | iter_combined: 1.1022469995539836
+iteration 42 || iter_time: 0.913970947265625 | iter_pixAcc: 0.8782801506316812 | iter_mIoU: 0.226732537150383 | iter_combined: 1.105012687782064
+iteration 43 || iter_time: 0.9079718589782715 | iter_pixAcc: 0.8786612941979117 | iter_mIoU: 0.22894203662872314 | iter_combined: 1.1076033308266349
+iteration 44 || iter_time: 0.9209690093994141 | iter_pixAcc: 0.8791194326878479 | iter_mIoU: 0.23145636916160583 | iter_combined: 1.1105758018494538
+iteration 45 || iter_time: 0.8999724388122559 | iter_pixAcc: 0.8797426998299319 | iter_mIoU: 0.2338312715291977 | iter_combined: 1.1135739713591297
+iteration 46 || iter_time: 0.911956787109375 | iter_pixAcc: 0.8802006252772848 | iter_mIoU: 0.236305370926857 | iter_combined: 1.116505996204142
+iteration 47 || iter_time: 0.8949711322784424 | iter_pixAcc: 0.8808574210269214 | iter_mIoU: 0.23788441717624664 | iter_combined: 1.1187418382031682
+iteration 48 || iter_time: 0.9349708557128906 | iter_pixAcc: 0.8814892113095238 | iter_mIoU: 0.24028854072093964 | iter_combined: 1.1217777520304635
+iteration 49 || iter_time: 0.9009702205657959 | iter_pixAcc: 0.8819000976155769 | iter_mIoU: 0.24292583763599396 | iter_combined: 1.1248259352515708
+iteration 50 || iter_time: 0.9609699249267578 | iter_pixAcc: 0.8826362448979592 | iter_mIoU: 0.2449718713760376 | iter_combined: 1.1276081162739968
+iteration 51 || iter_time: 0.9019696712493896 | iter_pixAcc: 0.882525362645058 | iter_mIoU: 0.24699252843856812 | iter_combined: 1.129517891083626
+iteration 52 || iter_time: 0.9359662532806396 | iter_pixAcc: 0.8829885805043172 | iter_mIoU: 0.2493479698896408 | iter_combined: 1.132336550393958
+iteration 53 || iter_time: 0.9199709892272949 | iter_pixAcc: 0.8833750986715441 | iter_mIoU: 0.2518743574619293 | iter_combined: 1.1352494561334734
+iteration 54 || iter_time: 0.980975866317749 | iter_pixAcc: 0.8839156899565381 | iter_mIoU: 0.2538241147994995 | iter_combined: 1.1377398047560376
+iteration 55 || iter_time: 0.8989710807800293 | iter_pixAcc: 0.8846785018552876 | iter_mIoU: 0.25521671772003174 | iter_combined: 1.1398952195753194
+iteration 56 || iter_time: 0.8999724388122559 | iter_pixAcc: 0.8845588067146501 | iter_mIoU: 0.25735944509506226 | iter_combined: 1.1419182518097124
+iteration 57 || iter_time: 1.0669677257537842 | iter_pixAcc: 0.8850555865109202 | iter_mIoU: 0.25901076197624207 | iter_combined: 1.1440663484871623
+iteration 58 || iter_time: 0.9189720153808594 | iter_pixAcc: 0.885603582424349 | iter_mIoU: 0.2607100009918213 | iter_combined: 1.1463135834161702
+iteration 59 || iter_time: 0.8999731540679932 | iter_pixAcc: 0.8861764981840193 | iter_mIoU: 0.2617838978767395 | iter_combined: 1.1479603960607587
+iteration 60 || iter_time: 0.9049711227416992 | iter_pixAcc: 0.8866766900510205 | iter_mIoU: 0.2628447115421295 | iter_combined: 1.1495214015931499
+iteration 61 || iter_time: 0.9109573364257812 | iter_pixAcc: 0.8869723360655738 | iter_mIoU: 0.26414307951927185 | iter_combined: 1.1511154155848455
+iteration 62 || iter_time: 0.893970251083374 | iter_pixAcc: 0.8869385954986834 | iter_mIoU: 0.2654622793197632 | iter_combined: 1.1524008748184467
+iteration 63 || iter_time: 0.9079720973968506 | iter_pixAcc: 0.8872538396906382 | iter_mIoU: 0.26657742261886597 | iter_combined: 1.1538312623095042
+iteration 64 || iter_time: 0.902970552444458 | iter_pixAcc: 0.8875809779575893 | iter_mIoU: 0.2679830491542816 | iter_combined: 1.155564027111871
+iteration 65 || iter_time: 0.8969721794128418 | iter_pixAcc: 0.887510467032967 | iter_mIoU: 0.2693225145339966 | iter_combined: 1.1568329815669636
+iteration 66 || iter_time: 0.8959701061248779 | iter_pixAcc: 0.8879706159168212 | iter_mIoU: 0.2701382637023926 | iter_combined: 1.1581088796192138
+iteration 67 || iter_time: 0.8989696502685547 | iter_pixAcc: 0.8881704148263783 | iter_mIoU: 0.2713930010795593 | iter_combined: 1.1595634159059376
+iteration 68 || iter_time: 0.8979575634002686 | iter_pixAcc: 0.8882992328181273 | iter_mIoU: 0.2723321318626404 | iter_combined: 1.1606313646807678
+iteration 69 || iter_time: 0.8919713497161865 | iter_pixAcc: 0.8884401933599527 | iter_mIoU: 0.27368471026420593 | iter_combined: 1.1621249036241585
+iteration 70 || iter_time: 0.8953042030334473 | iter_pixAcc: 0.8882509384110787 | iter_mIoU: 0.2748144268989563 | iter_combined: 1.1630653653100351
+iteration 71 || iter_time: 0.9139580726623535 | iter_pixAcc: 0.8887141348088531 | iter_mIoU: 0.275610089302063 | iter_combined: 1.1643242241109162
+iteration 72 || iter_time: 0.8979730606079102 | iter_pixAcc: 0.8889778229520975 | iter_mIoU: 0.2766524851322174 | iter_combined: 1.165630308084315
+iteration 73 || iter_time: 0.8989698886871338 | iter_pixAcc: 0.8890509339180878 | iter_mIoU: 0.2776203453540802 | iter_combined: 1.166671279272168
+iteration 74 || iter_time: 0.9079577922821045 | iter_pixAcc: 0.8893320454702152 | iter_mIoU: 0.27873989939689636 | iter_combined: 1.1680719448671115
+iteration 75 || iter_time: 0.9059569835662842 | iter_pixAcc: 0.8895028163265306 | iter_mIoU: 0.27974653244018555 | iter_combined: 1.1692493487667162
