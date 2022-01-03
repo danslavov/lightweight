@@ -28,13 +28,13 @@ class Evaluator(object):
         # image transform
         input_transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize([.485, .456, .406], [.229, .224, .225]),
+            # transforms.Normalize([.485, .456, .406], [.229, .224, .225]),
         ])
 
         # dataset and dataloader
-        val_dataset = get_segmentation_dataset(args.dataset, split='val', mode='testval', transform=input_transform)
+        val_dataset = get_segmentation_dataset(args.dataset, split='test', mode='testval', transform=input_transform)
         val_sampler = make_data_sampler(val_dataset, False, args.distributed)
-        val_batch_sampler = make_batch_data_sampler(val_sampler, images_per_batch=1)
+        val_batch_sampler = make_batch_data_sampler(val_sampler, images_per_batch=args.batch_size)
         self.val_loader = data.DataLoader(dataset=val_dataset,
                                           batch_sampler=val_batch_sampler,
                                           num_workers=args.workers,
@@ -42,10 +42,17 @@ class Evaluator(object):
 
         # create network
         self.model = get_segmentation_model(model=args.model, dataset=args.dataset,
-                                            aux=args.aux, pretrained=True, pretrained_base=False)
+                                            aux=args.aux, pretrained=False, pretrained_base=False)
         if args.distributed:
             self.model = self.model.module
         self.model.to(self.device)
+
+        if args.resume:
+            if os.path.isfile(args.resume):
+                name, ext = os.path.splitext(args.resume)
+                assert ext == '.pkl' or '.pth', 'Sorry only .pth and .pkl files supported.'
+                self.model.load_state_dict(torch.load(args.resume, map_location=lambda storage, loc: storage))
+                print('\nLOADED {}\n'.format(args.resume))
 
         self.metric = SegmentationMetric(val_dataset.num_class)
 
@@ -56,17 +63,18 @@ class Evaluator(object):
             model = self.model.module
         else:
             model = self.model
-        logger.info("Start validation, Total sample: {:d}".format(len(self.val_loader)))
+        # logger.info("Start validation, Total sample: {:d}".format(len(self.val_loader)))
         for i, (image, target) in enumerate(self.val_loader):
             image = image.to(self.device)
             target = target.to(self.device)
 
             with torch.no_grad():
                 outputs = model(image)
+
             self.metric.update(outputs[0], target)
             pixAcc, mIoU = self.metric.get()
             logger.info("Sample: {:d}, validation pixAcc: {:.3f}, mIoU: {:.3f}".format(
-                i + 1, pixAcc * 100, mIoU * 100))
+                i + 1, pixAcc, mIoU))
 
             if self.args.save_pred:
                 pred = torch.argmax(outputs[0], 1)
@@ -74,7 +82,7 @@ class Evaluator(object):
 
                 predict = pred.squeeze(0)
                 mask = get_color_pallete(predict, self.args.dataset)
-                # mask.save(os.path.join(outdir, os.path.splitext(filename[0])[0] + '.png'))
+                mask.save('{}/output.png'.format(self.args.save_pred_dir))
         synchronize()
 
 
@@ -92,13 +100,6 @@ if __name__ == '__main__':
         torch.cuda.set_device(args.local_rank)
         torch.distributed.init_process_group(backend="nccl", init_method="env://")
         synchronize()
-
-    # TODO: optim code
-    args.save_pred = False
-    if args.save_pred:
-        outdir = '../runs/pred_pic/{}_{}'.format(args.model, args.dataset)
-        if not os.path.exists(outdir):
-            os.makedirs(outdir)
 
     logger = setup_logger(args.model, args.log_dir, get_rank(),
                           filename='{}_{}_log.txt'.format(args.model, args.dataset), mode='a+')

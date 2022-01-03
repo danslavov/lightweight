@@ -35,9 +35,9 @@ def parse_args():
                         help='model name (default: mobilenet)')
     parser.add_argument('--dataset', type=str, default='elements',
                         help='dataset name (choices: citys, elements)')
-    parser.add_argument('--base-size', type=int, default=700,
+    parser.add_argument('--base-size', type=int, default=300,
                         help='base image size')
-    parser.add_argument('--crop-size', type=int, default=700,
+    parser.add_argument('--crop-size', type=int, default=300,
                         help='crop image size')
     parser.add_argument('--workers', '-j', type=int, default=2,          # ------------------WORKERS------------
                         metavar='N', help='dataloader threads')
@@ -48,13 +48,13 @@ def parse_args():
                         help='Auxiliary loss')
     parser.add_argument('--aux-weight', type=float, default=0.4,
                         help='auxiliary loss weight')
-    parser.add_argument('--batch-size', type=int, default=32, metavar='N',          # ---------BATCH------------
+    parser.add_argument('--batch-size', type=int, default=4, metavar='N',          # ---------BATCH------------
                         help='input batch size for training (default: 4)')
-    parser.add_argument('--start-epoch', type=int, default=71,
+    parser.add_argument('--start-epoch', type=int, default=576,
                         metavar='N', help='start epochs (default:0)')
     parser.add_argument('--epochs', type=int, default=999, metavar='N',
                         help='number of epochs to train (default: 240)')
-    parser.add_argument('--lr', type=float, default=0.00005, metavar='LR',
+    parser.add_argument('--lr', type=float, default=1e-6, metavar='LR',
                         help='learning rate (default: 1e-4)')
     parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                         help='momentum (default: 0.9)')
@@ -83,6 +83,10 @@ def parse_args():
                         help='Directory for saving checkpoint models')
     parser.add_argument('--log-iter', type=int, default=1,
                         help='print log every log-iter')
+    parser.add_argument('--save-pred', type=bool, default=False,
+                        help='save output prediction as image')
+    parser.add_argument('--save-pred-dir', type=str, default='C:/Users/Admin/Desktop/tmp',
+                        help='directory where to save output prediction as image')
     # evaluation only
     parser.add_argument('--skip-val', action='store_true', default=False,
                         help='skip validation during training')
@@ -123,8 +127,8 @@ class Trainer(object):
         if not args.skip_val:
             valset = get_segmentation_dataset(args.dataset, split='val', mode='val', **data_kwargs)
             val_sampler = make_data_sampler(valset, False, args.distributed)
-            # val_batch_sampler = make_batch_data_sampler(val_sampler, args.batch_size)  # INFO: orig
-            val_batch_sampler = make_batch_data_sampler(val_sampler, 4)  # INFO: small batch size only for validation, to avoid cuda overflow TODO: use orig, if needed
+            val_batch_sampler = make_batch_data_sampler(val_sampler, args.batch_size)  # INFO: orig
+            # val_batch_sampler = make_batch_data_sampler(val_sampler, 4)  # INFO: small batch size only for validation, to avoid cuda overflow TODO: use orig, if needed
             self.val_loader = data.DataLoader(dataset=valset,
                                               batch_sampler=val_batch_sampler,
                                               num_workers=args.workers,
@@ -160,7 +164,7 @@ class Trainer(object):
 
         # This freezing should be applied after every call of model.train().
         # But it's also applied here to initialize the optimizer correctly (maybe not needed, just in case).
-        freeze_encoder(self.model)
+        # freeze_encoder(self.model)
 
         # print_trainable_state(self.model)
 
@@ -209,7 +213,7 @@ class Trainer(object):
         # logger.info('batch size: {} | workers: {}\n'.format(self.args.batch_size, self.args.workers))
 
         self.model.train()
-        freeze_encoder(self.model)
+        # freeze_encoder(self.model)
 
         start = time.time()
         # duration_all_iterations = 0
@@ -222,7 +226,7 @@ class Trainer(object):
 
             images = images.to(self.device)
             targets = targets.to(self.device)
-            outputs = self.model(images)  # INFO: outputs have 4 channels (1 for alpha)
+            outputs = self.model(images)
             loss_dict = self.criterion(outputs, targets)
             losses = sum(loss for loss in loss_dict.values())
             self.optimizer.zero_grad()
@@ -250,7 +254,7 @@ class Trainer(object):
                 if epoch % epochs_per_val == 0:
                     self.validation(epoch)
                     self.model.train()
-                    freeze_encoder(self.model)
+                    # freeze_encoder(self.model)
 
                 epoch += 1  # increment epoch counter
                 start = time.time()  # reset time
@@ -265,7 +269,7 @@ class Trainer(object):
         #     "Total training time: {} ({:.4f}s / it)".format(
         #         total_training_str, total_training_time / max_iters))
 
-            img_load_start = time.time()
+            # img_load_start = time.time()
 
     def validation(self, epoch):
         # total_inter, total_union, total_correct, total_label = 0, 0, 0, 0
@@ -295,6 +299,9 @@ class Trainer(object):
 
             val_loss += float(losses)
 
+            # _, mIoU = self.metric.get()
+            # print('{} | loss: {} | mIoU: {}'.format(i, float(losses), mIoU))
+
         duration = time.time() - start
         avg_val_loss = val_loss / len(self.val_loader)
         pixAcc, mIoU = self.metric.get()
@@ -306,10 +313,13 @@ class Trainer(object):
         if new_pred > self.best_pred:
             is_best = True
             self.best_pred = new_pred
-            save_checkpoint(self.model, self.args, epoch, is_best)
-            logger.info('MODEL SAVED')
+            if epoch != -1:
+                self.no_improvement = 0
+                save_checkpoint(self.model, self.args, epoch, is_best)
+                logger.info('MODEL SAVED')
         else:
             self.no_improvement += 1
+            logger.info('non-improvement {}'.format(self.no_improvement))
         logger.info('')
         torch.cuda.empty_cache()
         if self.no_improvement > self.args.max_nonimprovement:

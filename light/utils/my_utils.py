@@ -34,8 +34,7 @@ def print_modules_with_index_and_name(model):
         index += 1
 
 
-# pred is tensor on cpu
-def visual_check(img_path, mask_path, pred):\
+def save_output(output):
 
     # open image and mask
     img = cv2.imread(img_path)

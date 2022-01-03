@@ -254,7 +254,7 @@ def _get_city_pairs(folder, split='train'):
         print('Found {} images in the folder {}'.format(len(img_paths), img_folder))
         return img_paths, mask_paths
 
-    if split in ('train', 'val'):
+    if split in ('train', 'val', 'test'):
         img_folder = os.path.join(folder, split)
         mask_folder = os.path.join(folder, split + '_labels')
         img_paths, mask_paths = get_path_pairs(img_folder, mask_folder)
